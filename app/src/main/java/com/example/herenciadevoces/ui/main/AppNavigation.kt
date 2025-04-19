@@ -31,7 +31,7 @@ object LanguageSelection
 fun AppNavigation() {
     val navController = rememberNavController()
     val variantSelectionViewModel: VariantSelectionViewModel = hiltViewModel()
-    val listIdsVariants = remember { mutableStateListOf<Int>() }
+    val listIdsLanguageVariants = remember { mutableStateListOf<Int>() }
     NavHost(
         navController = navController,
         //startDestination = VariantSelection
@@ -40,9 +40,11 @@ fun AppNavigation() {
     ) {
 
         composable<LanguageSelection> {
-            LanguageSelectionScreen() {
+            LanguageSelectionScreen() { idsLanguageVariants ->
                 navController.navigate(SemanticFieldSelection)
+                Log.d("LIST IDS LANGUAGE VARIANTS ", idsLanguageVariants.toList().toString())
             }
+
         }
 
         /*
@@ -70,7 +72,7 @@ fun AppNavigation() {
             SemanticFieldSelectionScreen { idSemanticField ->
                 navController.navigate(
                     WordSounds(
-                        idsVariants = listIdsVariants.toList(),
+                        idsVariants = listIdsLanguageVariants.toList(),
                         idSemanticField = idSemanticField
                     )
                 )
