@@ -1,8 +1,7 @@
 package com.example.herenciadevoces.data.local.repository
 
 import com.example.herenciadevoces.data.local.dao.LanguageVariantDAO
-import com.example.herenciadevoces.data.local.model.LanguageANDLanguageVariant
-import com.example.herenciadevoces.data.local.model.LanguageVariantEntity
+import com.example.herenciadevoces.domain.LanguageVariant.model.LanguageANDLanguageVariant
 import javax.inject.Inject
 
 class LanguageVariantRepository @Inject constructor(
@@ -11,5 +10,9 @@ class LanguageVariantRepository @Inject constructor(
     fun getAllLanguageANDLanguageVariants() : List<LanguageANDLanguageVariant>{
         return languageVariantDAO.getAllLanguageANDLanguageVariants()
 
+    }
+
+    fun getLanguageANDLanguageVariantByIds(idLanguageVariant: List<Int>) : List<LanguageANDLanguageVariant>{
+        return languageVariantDAO.getLanguageANDLanguageVariantByIds(idLanguageVariant)
     }
 }

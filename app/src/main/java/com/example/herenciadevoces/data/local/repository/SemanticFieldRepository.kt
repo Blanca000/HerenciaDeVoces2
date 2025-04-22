@@ -10,14 +10,9 @@ class SemanticFieldRepository @Inject constructor(
 ) {
     fun getAllSemanticFields():List<SemanticFieldEntity>{
         return semanticFieldDAO.getAllSemanticFields()
-        /*
-        Log.d("semanticFieldDAO", semanticFieldDAO.getAllSemanticFields().toString())
-        val result = semanticFieldDAO.getAllSemanticFields()
-        Log.d("DB_DEB", "Número de registros obtenidos: ${result.size}")
-        result.forEach {
-            Log.d("DB_DEBUG", "Registro: $it")
-        }
-        return result
-        */
-}
+    }
+
+    fun getSemanticFieldsByLanguageVariants(idsLanguageVariants:List<Int>):List<SemanticFieldEntity>{
+        return semanticFieldDAO.getSematicFieldsByLanguageVariants(idsLanguageVariants)
+    }
 }

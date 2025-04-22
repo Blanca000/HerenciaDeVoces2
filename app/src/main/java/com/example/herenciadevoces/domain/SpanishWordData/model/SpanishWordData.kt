@@ -2,6 +2,7 @@ package com.example.herenciadevoces.domain.SpanishWordData.model
 
 import com.example.herenciadevoces.data.local.model.SpanishWordDataEntity
 import com.example.herenciadevoces.domain.LanguageWordDate.model.LanguageWordData
+import com.example.herenciadevoces.domain.LanguageWordDate.model.LanguageWordDataAndLV
 
 
 data class SpanishWordData(
@@ -10,7 +11,7 @@ data class SpanishWordData(
     val spanishWord: String,
     val pathAudio: String,
     val pathImage: String,
-    val LWD: MutableList<LanguageWordData> = mutableListOf()
+    val lWD: MutableList<LanguageWordDataAndLV> = mutableListOf()
 )
 
 fun SpanishWordDataEntity.toSpanishWordData(): SpanishWordData {

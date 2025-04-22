@@ -103,7 +103,7 @@ fun LanguageSelectionScreen(
         floatingActionButton = {
             ElevatedButton(
                 onClick = { navigateToSFS(selectedLanguageVariantsIds) }, //onClick = { navigateToSFS(languageVariant.idLanguageVariant) },
-                enabled = true,
+                enabled = selectedLanguageVariantsIds.isNotEmpty(),
                 modifier = Modifier.size(65.dp),
                 shape = CircleShape,
                 contentPadding = PaddingValues(0.dp),

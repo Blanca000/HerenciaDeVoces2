@@ -1,5 +1,6 @@
 package com.example.herenciadevoces.domain.LanguageWordDate.model
 
+import com.example.herenciadevoces.domain.LanguageVariant.model.LanguageANDLanguageVariant
 import com.example.herenciadevoces.data.local.model.LanguageWordDataEntity
 
 data class LanguageWordData(

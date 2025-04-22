@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonColors
@@ -47,17 +49,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.herenciadevoces.R
+import com.example.herenciadevoces.domain.LanguageWordDate.model.LanguageWordData
+import com.example.herenciadevoces.domain.LanguageWordDate.model.LanguageWordDataAndLV
 import com.example.herenciadevoces.domain.SpanishWordData.model.SpanishWordData
 import com.example.herenciadevoces.ui.theme.Orange
 import com.example.herenciadevoces.ui.theme.YellowBackGround
 import com.example.herenciadevoces.ui.viewmodels.WordSoundsViewModel
 import java.io.InputStream
 import com.example.herenciadevoces.ui.components.Header
+import com.example.herenciadevoces.ui.interaction.LanguageANDLanguageVariantState
 
 @Composable
 fun WordSoundsScreen(viewModel: WordSoundsViewModel = hiltViewModel()) {
     val actualItem by viewModel.actualItem.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val semanticFieldName by viewModel.semanticFieldName.collectAsState()
 
     if (isLoading) {
         CircularProgressIndicator() // Show loading indicator
@@ -68,10 +74,10 @@ fun WordSoundsScreen(viewModel: WordSoundsViewModel = hiltViewModel()) {
                     .fillMaxSize()
                     .background(color = YellowBackGround)
             ) {
-                Header(title = "ANIMALES!")//Header(title = ${wordData.})
+                Header(title = semanticFieldName.uppercase())//Header(title = ${wordData.})
                 WordImage(wordData)
                 Word(wordData)
-                VariantSoundButton()
+                ItemsLanguageVariants(wordData.lWD)
 
                 /*
                 wordData.LWD.forEach { variantData ->
@@ -84,6 +90,17 @@ fun WordSoundsScreen(viewModel: WordSoundsViewModel = hiltViewModel()) {
             }
         } ?: Text("No hay datos disponibles")
 
+    }
+}
+
+@Composable
+fun ItemsLanguageVariants(
+    lwd: MutableList<LanguageWordDataAndLV>
+) {
+    LazyColumn {
+        items(lwd) { languageWordData ->
+            VariantSoundButton(languageWordData)
+        }
     }
 }
 
@@ -166,29 +183,38 @@ fun Word(wordData: SpanishWordData) {
 
 }
 
-
 @Composable
-fun VariantSoundButton() {
+fun VariantSoundButton(
+    languageWordData: LanguageWordDataAndLV
+) {
     val context = LocalContext.current
     var mediaPlayer by remember { mutableStateOf<MediaPlayer?>(null) }
+    val currentPath by rememberUpdatedState(newValue = languageWordData.pathImage)
+
+    var bitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+    LaunchedEffect(key1 = currentPath) {
+        bitmap = loadBitmapFromAssets(context, currentPath)
+    }
 
     Row(
         modifier = Modifier.padding(18.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(R.drawable.mixteco),
-            contentDescription = "Mixteco",
-            modifier = Modifier
-                .size(65.dp)
-                .clip(CircleShape)
-        )
+        bitmap?.let{
+            Image(
+                bitmap = it.asImageBitmap(),
+                contentDescription = languageWordData.languageName,
+                modifier = Modifier
+                    .size(65.dp)
+                    .clip(CircleShape)
+            )
+        }
         Spacer(modifier = Modifier.width(16.dp))
         Column(
             modifier = Modifier.padding(end = 16.dp)
         ) {
-            Text(text = "Palabra lenguaje", fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
-            Text(text = "Idioma, Región", fontSize = 14.sp)
+            Text(text = languageWordData.languageWord, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
+            Text(text = "${languageWordData.languageName}, ${languageWordData.variantName}", fontSize = 14.sp, modifier = Modifier.width(215.dp))
         }
 
         IconButton(
@@ -196,7 +222,7 @@ fun VariantSoundButton() {
                 mediaPlayer?.release() // Libera recursos si ya está reproduciendo
                 mediaPlayer = MediaPlayer().apply {
                     val assetFileDescriptor =
-                        context.assets.openFd("audios/mixteco-variante1/animales_abejorro.mp3")
+                        context.assets.openFd(languageWordData.pathAudio)
                     setDataSource(
                         assetFileDescriptor.fileDescriptor,
                         assetFileDescriptor.startOffset,
@@ -217,39 +243,6 @@ fun VariantSoundButton() {
 
 
     }
-
-
-    /*
-    Text(text = "AQUI VA EL NOMBRE DE LA VARIANTE")
-    ElevatedButton(onClick = {
-        mediaPlayer?.release() // Libera recursos si ya está reproduciendo
-        mediaPlayer = MediaPlayer().apply {
-            val assetFileDescriptor = context.assets.openFd("audios/mixteco-variante1/animales_abejorro.mp3")
-            setDataSource(
-                assetFileDescriptor.fileDescriptor,
-                assetFileDescriptor.startOffset,
-                assetFileDescriptor.length
-            )
-            prepare()
-            start()
-        }
-    }) {
-        Text(text = "palabra", modifier = Modifier.padding(end = 4.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.ic_volumeup),
-            contentDescription = "Reproducir Sonido",
-            modifier = Modifier.size(20.dp)
-        )
-    }
-
-    */
-
-}
-
-@Composable
-fun SpanishSoundButton(wordData: SpanishWordData) {
-
-
 }
 
 @Composable

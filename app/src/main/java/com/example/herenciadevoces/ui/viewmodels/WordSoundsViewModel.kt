@@ -5,9 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import com.example.herenciadevoces.domain.LanguageVariant.usecase.GetLanguageANDLanguageVariantByIds
 import com.example.herenciadevoces.domain.LanguageWordDate.usecase.GetLWDBySWDandLV
 import com.example.herenciadevoces.domain.SpanishWordData.model.SpanishWordData
 import com.example.herenciadevoces.domain.SpanishWordData.usecase.GetSpanishWordDataBySF
+import com.example.herenciadevoces.ui.interaction.LanguageANDLanguageVariantState
 import com.example.herenciadevoces.ui.interaction.WordDataState
 import com.example.herenciadevoces.ui.main.WordSounds
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,9 +28,11 @@ import javax.inject.Inject
 class WordSoundsViewModel @Inject constructor(
     private val getSpanishWordDataBySF: GetSpanishWordDataBySF,
     private val getLWDBySWDandLV: GetLWDBySWDandLV,
+    private val getLanguageANDLanguageVariantByIds: GetLanguageANDLanguageVariantByIds,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel()  {
     private val wordSounds = savedStateHandle.toRoute<WordSounds>()
+    val semanticFieldName: StateFlow<String> = MutableStateFlow(wordSounds.semanticFieldName).asStateFlow()
 
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
@@ -55,12 +59,17 @@ class WordSoundsViewModel @Inject constructor(
                 val fetchedSpanishWordData = getSpanishWordDataBySF(wordSounds.idSemanticField)
                 fetchedSpanishWordData.forEach { spanishWordData ->
                     val fetchedLanguageWordData = getLWDBySWDandLV(spanishWordData.idSpanishWordData,wordSounds.idsVariants)
-                    spanishWordData.LWD.addAll(fetchedLanguageWordData)
+                    spanishWordData.lWD.addAll(fetchedLanguageWordData)
                 }
+
+
+
+                //Log.d("LanguagVariantsData", fetchedLanguageVariants.toString())
                 Log.d("ITEMS DATA", fetchedSpanishWordData.toString())
 
                 withContext(Dispatchers.Main) {
                     _wordDataState.value = _wordDataState.value.copy(wordData = fetchedSpanishWordData)
+                    //_languageVariantsState.value = _languageVariantsState.value.copy(languageVariants = fetchedLanguageVariants)
                     _isLoading.value = false // Set loading to false after success
                 }
             } catch (e: Exception) {

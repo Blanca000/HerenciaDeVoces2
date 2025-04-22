@@ -8,10 +8,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.herenciadevoces.ui.viewmodels.VariantSelectionViewModel
 import com.example.herenciadevoces.ui.views.LanguageSelectionScreen
 import com.example.herenciadevoces.ui.views.SemanticFieldSelectionScreen
-import com.example.herenciadevoces.ui.views.VariantSelectionScreen
 import com.example.herenciadevoces.ui.views.WordSoundsScreen
 import kotlinx.serialization.Serializable
 
@@ -19,10 +17,10 @@ import kotlinx.serialization.Serializable
 object VariantSelection
 
 @Serializable
-object SemanticFieldSelection
+data class SemanticFieldSelection(val idsVariants: List<Int>)
 
 @Serializable
-data class WordSounds(val idsVariants: List<Int>, val idSemanticField: Int)// Mas de un parametro
+data class WordSounds(val idsVariants: List<Int>, val idSemanticField: Int, val semanticFieldName: String)
 
 @Serializable
 object LanguageSelection
@@ -30,7 +28,6 @@ object LanguageSelection
 @Composable
 fun AppNavigation() {
     val navController = rememberNavController()
-    val variantSelectionViewModel: VariantSelectionViewModel = hiltViewModel()
     val listIdsLanguageVariants = remember { mutableStateListOf<Int>() }
     NavHost(
         navController = navController,
@@ -41,8 +38,9 @@ fun AppNavigation() {
 
         composable<LanguageSelection> {
             LanguageSelectionScreen() { idsLanguageVariants ->
-                navController.navigate(SemanticFieldSelection)
+                navController.navigate(SemanticFieldSelection(idsLanguageVariants))
                 Log.d("LIST IDS LANGUAGE VARIANTS ", idsLanguageVariants.toList().toString())
+                listIdsLanguageVariants.addAll(idsLanguageVariants)
             }
 
         }
@@ -69,11 +67,12 @@ fun AppNavigation() {
 
 
         composable<SemanticFieldSelection> {
-            SemanticFieldSelectionScreen { idSemanticField ->
+            SemanticFieldSelectionScreen { idSemanticField, semanticFieldName ->
                 navController.navigate(
                     WordSounds(
                         idsVariants = listIdsLanguageVariants.toList(),
-                        idSemanticField = idSemanticField
+                        idSemanticField = idSemanticField,
+                        semanticFieldName = semanticFieldName
                     )
                 )
             }
