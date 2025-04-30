@@ -175,7 +175,7 @@ fun Word(wordData: SpanishWordData) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_volumeup),
                 contentDescription = "Reproducir Sonido",
-                modifier = Modifier.size(35.dp),
+                modifier = Modifier.size(40.dp),
                 tint = Color.Black
             )
         }
@@ -205,16 +205,16 @@ fun VariantSoundButton(
                 bitmap = it.asImageBitmap(),
                 contentDescription = languageWordData.languageName,
                 modifier = Modifier
-                    .size(65.dp)
+                    .size(50.dp)
                     .clip(CircleShape)
             )
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(
-            modifier = Modifier.padding(end = 16.dp)
+            modifier = Modifier.padding(end = 8.dp)
         ) {
-            Text(text = languageWordData.languageWord, fontWeight = FontWeight.SemiBold, fontSize = 22.sp)
-            Text(text = "${languageWordData.languageName}, ${languageWordData.variantName}", fontSize = 14.sp, modifier = Modifier.width(215.dp))
+            Text(text = languageWordData.languageWord, fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+            Text(text = "${languageWordData.languageName}, ${languageWordData.variantName}", fontSize = 12.sp, modifier = Modifier.width(215.dp))
         }
 
         IconButton(
@@ -236,7 +236,7 @@ fun VariantSoundButton(
             Icon(
                 painter = painterResource(id = R.drawable.ic_volumeup),
                 contentDescription = "Reproducir Sonido",
-                modifier = Modifier.size(35.dp),
+                modifier = Modifier.size(40.dp),
                 tint = Color.Black
             )
         }
